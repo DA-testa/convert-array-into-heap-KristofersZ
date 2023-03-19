@@ -1,41 +1,67 @@
-# python3
+# 211RDB475 Kristofers Zellītis 9.grupa
 
 
 def build_heap(data):
     swaps = []
-    # TODO: Creat heap and heap sort
-    # try to achieve  O(n) and not O(n2)
+    n = len(data)
+    for i in range(n//2, -1, -1):
+        swaps = heap_sort(data, i, swaps)
+    return swaps
 
-
+def heap_sort(data, i, swaps):
+    n = len(data)
+    min_index = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+    if l < n and data[l] < data[min_index]:
+        min_index = l
+    if r < n and data[r] < data[min_index]:
+        min_index = r
+    if i != min_index:
+        data[i], data[min_index] = data[min_index], data[i]
+        swaps.append((i, min_index))
+        swaps = heap_sort(data, min_index, swaps)
     return swaps
 
 
+
 def main():
-    
-    # TODO : add input and corresponding checks
-    # add another input for I or F 
-    # first two tests are from keyboard, third test is from a file
+    mode = input("Enter F (for file) or I (for input): ").strip()
+    if "I" in mode:
+        n = int(input())
+        data = list(map(int, input().split()))
+        assert len(data) == n
 
+    # input from file
+    elif "F" in mode:
+        filename = input("Enter file name: ")
+        with open (f"tests/{filename}") as f:
+            n = int(f.readline().strip())
+            data = list(map(int, f.readline().strip().split()))
 
-    # input from keyboard
-    n = int(input())
-    data = list(map(int, input().split()))
+            # checks if length of data is the same as the said length
+            assert len(data) == n
 
-    # checks if lenght of data is the same as the said lenght
-    assert len(data) == n
+    else:
+        print("Error. Try again")
+        return
 
-    # calls function to assess the data 
-    # and give back all swaps
     swaps = build_heap(data)
 
-    # TODO: output how many swaps were made, 
-    # this number should be less than 4n (less than 4*len(data))
+    for i in range(n//2):
+        if 2*i+1 < n and data[i] > data[2*i+1]:
+            print("Error. Not satisfied")
+            return
 
+        if 2*i+2 < n and data[i] > data[2*i+2]:
+            print("Error: Not satisfied")
+            return
 
-    # output all swaps
     print(len(swaps))
+
     for i, j in swaps:
         print(i, j)
+
 
 
 if __name__ == "__main__":
